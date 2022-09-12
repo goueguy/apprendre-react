@@ -63,10 +63,29 @@ class Increment extends React.Component{
     }
     render(){
         return <div>
-            <p>COUNT:</p>{this.state.start}
+            <p>COUNT:{this.state.start}</p>
+           
         </div>
     }
 }
+class ManuelIncrementer extends React.Component{
+    constructor(props){
+        super(props);
+        this.state = {
+            n:0
+        }
+    }
+    Increment(){
+        this.setState((state,props)=>{
+            return {n:state.n + 1}
+        })
+    }
+    render(){
+        return <React.Fragment>
+             <p>DATA STEP:{this.state.n}</p> <button type="button" onClick={Increment}>INCRÉMENTER</button>
+        </React.Fragment>
+    }
+} 
 Increment.defaultProps = {
     step:0,
     start:0
@@ -78,6 +97,7 @@ function Home(){
         <Clock/>
         <Increment start={10} steps={5}/>
         <Increment start={50} steps={10}/>
+        <ManuelIncrementer/>
     </div>
 }
 
