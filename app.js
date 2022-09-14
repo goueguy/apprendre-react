@@ -75,21 +75,21 @@ class ManuelIncrementer extends React.Component{
             n:0
         }
     }
-    Increment(){
-        this.setState((state,props)=>{
-            return {n:state.n + 1}
-        })
+    increment(){
+        this.setState((state,props)=>({n:state.n + 1}))
     }
     render(){
         return <React.Fragment>
-             <p>DATA STEP:{this.state.n}</p> <button type="button" onClick={Increment}>INCRÉMENTER</button>
+             <p>DATA STEP:{this.state.n}</p> <button type="button" onClick={this.increment.bind(this)}>INCRÉMENTER</button>
         </React.Fragment>
     }
 } 
-Increment.defaultProps = {
+
+ManuelIncrementer.defaultProps = {
     step:0,
     start:0
 }
+
 function Home(){
     return <div>
         <Welcome name="GOUEGUY"/>
