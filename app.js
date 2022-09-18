@@ -1,104 +1,75 @@
-function WelcomeFunc({name,children}){
-    return <div>
-        <h1>Bonjour {name}</h1>
-        <p>
-            {children}
-        </p>
+
+
+function Field({name,value,onChange,children}){
+    return <div className="form-group">
+        <label htmlFor={name} style={{textTransform:"capitalize"}}>{children}</label>
+        <input type="text" name={name} id={name} value={value} onChange={onChange} className="form-control" />
     </div>
 }
-
-class Welcome extends React.Component{
-    render(){
-        const {name,children}= this.props;
-        //console.log(this.props);
-        return <div>
-            <h1>Bonjour {name}</h1>
-            <p>{children}</p>
-        </div>;
-    }
+function Checkbox({name,value,onChange,children}){
+    return <div className="form-check">
+        <input type="checkbox" name={name} id={name} checked={value} onChange={onChange} className="form-check-input" />
+        <label className="form-check-label" htmlFor={name} style={{textTransform:"capitalize"}}>{children}</label>
+    </div>
 }
-
-class Clock extends React.Component{
+class Home extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            date: new Date()
-        }
-        this.timer = null;
-    }
-    componentDidMount(){
-        this.timer = window.setInterval(this.tick.bind(this),1000);
-    }
-    componentWillUnmount(){
-        window.clearInterval(this.timer)
-    }
-    tick(){
-        this.setState({date: new Date()})
-    }
-    render(){
-        return <p>
-            {this.state.date.toLocaleDateString()} {this.state.date.toLocaleTimeString()}
-        </p>
-    }
-}
+            nom:"",
+            prenom:"",
+            email:"",
+            pays:"",
+            newsletter:false,
 
-class Increment extends React.Component{
-    constructor(props){
-        super(props);
-        this.state = {
-            start:props.start
         }
-        this.timer = null;
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
-    componentDidMount(){
-        this.timer = window.setInterval(this.plusUn.bind(this),1000);
-    }
-    componentWillUnmount(){
-        window.clearInterval(this.timer);
-    }
-    plusUn(){
-        this.setState((state,props)=>{
-            return {start:state.start+props.steps}
+    handleChange(e){
+        const target = e.target;
+        const value = target.type ==='checkbox' ? target.checked:target.value;
+        const name = target.name;
+
+        this.setState({
+            [name]:value
         })
     }
-    render(){
-        return <div>
-            <p>COUNT:{this.state.start}</p>
-           
-        </div>
+    handleSubmit(e){
+        e.preventDefault();
+        
+        const data = JSON.stringify(this.state);
+
+        console.log(data);
     }
-}
-class ManuelIncrementer extends React.Component{
-    constructor(props){
-        super(props);
-        this.state = {
-            n:0
+    render(){
+        {
+            console.log(this.state.email);
         }
+        return<form onSubmit={this.handleSubmit} className="container">
+            <div className="row">
+                <div className="col-lg-6">
+                    <div className="form-group">
+                        <Field name="nom" value={this.state.nom} onChange={this.handleChange}>Nom</Field>
+                    </div>
+                </div>
+                <div className="col-lg-6">
+                    <div className="form-group">
+                        <Field name="prenom" value={this.state.prenom} onChange={this.handleChange}>Prénoms</Field>
+                    </div>
+                </div>
+                <div className="col-lg-6">
+                    <Checkbox name="newsletter" value={this.state.newsletter} onChange={this.handleChange}>Abonnez-vous à la Newsletter ?</Checkbox>
+                </div>
+                
+            </div>
+            <div style={{marginTop:"15px",marginBottom:"15px"}}>
+                <button className="btn btn-primary">ENVOYER</button>
+            </div>
+            {
+                JSON.stringify(this.state)
+            }
+        </form>
     }
-    increment(){
-        this.setState((state,props)=>({n:state.n + 1}))
-    }
-    render(){
-        return <React.Fragment>
-             <p>DATA STEP:{this.state.n}</p> <button type="button" onClick={this.increment.bind(this)}>INCRÉMENTER</button>
-        </React.Fragment>
-    }
-} 
-
-ManuelIncrementer.defaultProps = {
-    step:0,
-    start:0
 }
-
-function Home(){
-    return <div>
-        <Welcome name="GOUEGUY"/>
-        <Welcome name="LOBA YVAN"/>
-        <Clock/>
-        <Increment start={10} steps={5}/>
-        <Increment start={50} steps={10}/>
-        <ManuelIncrementer/>
-    </div>
-}
-
 ReactDOM.render(<Home/>,document.querySelector("#app"))

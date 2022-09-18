@@ -1,4 +1,3 @@
 # apprendre-react
 
-
-- React : Chapitre 5, Les évènements: 3 min 24
+- React : React : Chapitre 6, Les formulaires: 27 min 36
