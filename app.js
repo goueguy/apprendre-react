@@ -1,75 +1,79 @@
-
-
-function Field({name,value,onChange,children}){
-    return <div className="form-group">
-        <label htmlFor={name} style={{textTransform:"capitalize"}}>{children}</label>
-        <input type="text" name={name} id={name} value={value} onChange={onChange} className="form-control" />
-    </div>
+const scaleNames = {
+    c:"Celcius",
+    f:"Farenheight"
 }
-function Checkbox({name,value,onChange,children}){
-    return <div className="form-check">
-        <input type="checkbox" name={name} id={name} checked={value} onChange={onChange} className="form-check-input" />
-        <label className="form-check-label" htmlFor={name} style={{textTransform:"capitalize"}}>{children}</label>
-    </div>
+
+/* 
+    (50°F - 32) x .5556 = 10°C
+*/
+function ToCelcius(farenheight){
+    return  (farenheight-32) * 5/9
 }
-class Home extends React.Component{
+/*
+    (30°C x 1.8) + 32 = 86°F
+*/
+function ToFarenheight(celcius){
+    return (celcius*1.8)+32
+}
+class TemperatureInput extends React.Component{
+    constructor(props){
+        super(props);
+        this.handleChange = this.handleChange.bind(this);
+    }
+    handleChange(e){
+        this.props.onTemperatureChange(e.target.value);
+    }
+    render(){
+        const {temperature} = this.props;
+
+        return (
+            <div className="form-group">
+                <label htmlFor="temperature">Temperature (en {this.props.scale==="c" ? scaleNames.c:scaleNames.f}):</label>
+                <input name="temperature" className="form-control" id="temperature" value={temperature} onChange={this.handleChange}/>
+            </div>
+        )
+    }
+}
+class Calculator extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            nom:"",
-            prenom:"",
-            email:"",
-            pays:"",
-            newsletter:false,
-
+            scale:'c',//echelle par défaut (celcius)
+            temperature:20
         }
         this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleTemperatureChange = this.handleTemperatureChange.bind(this);
     }
     handleChange(e){
-        const target = e.target;
-        const value = target.type ==='checkbox' ? target.checked:target.value;
-        const name = target.name;
-
         this.setState({
-            [name]:value
+            temperature:e.target.value
         })
     }
-    handleSubmit(e){
-        e.preventDefault();
-        
-        const data = JSON.stringify(this.state);
-
-        console.log(data);
+    handleTemperatureChange(temperature){
+        this.setState({
+            temperature
+        })
     }
     render(){
-        {
-            console.log(this.state.email);
-        }
-        return<form onSubmit={this.handleSubmit} className="container">
-            <div className="row">
-                <div className="col-lg-6">
-                    <div className="form-group">
-                        <Field name="nom" value={this.state.nom} onChange={this.handleChange}>Nom</Field>
-                    </div>
-                </div>
-                <div className="col-lg-6">
-                    <div className="form-group">
-                        <Field name="prenom" value={this.state.prenom} onChange={this.handleChange}>Prénoms</Field>
-                    </div>
-                </div>
-                <div className="col-lg-6">
-                    <Checkbox name="newsletter" value={this.state.newsletter} onChange={this.handleChange}>Abonnez-vous à la Newsletter ?</Checkbox>
-                </div>
-                
-            </div>
-            <div style={{marginTop:"15px",marginBottom:"15px"}}>
-                <button className="btn btn-primary">ENVOYER</button>
-            </div>
-            {
-                JSON.stringify(this.state)
-            }
-        </form>
+        const { temperature,scale } = this.state;
+        const celcius = scale==="c" ? temperature:ToCelcius(temperature);
+        const farenheight = scale==="f" ? temperature:ToFarenheight(celcius);
+        return <div>
+            <TemperatureInput scale="c" temperature={celcius} onTemperatureChange={this.handleTemperatureChange}/>
+            <TemperatureInput scale="f" temperature={farenheight}/>
+            <BoilingVerdict celcius={parseFloat(temperature)}/>
+        </div>
     }
 }
-ReactDOM.render(<Home/>,document.querySelector("#app"))
+
+function BoilingVerdict({celcius}){
+    let message =  celcius < 100  ? "L'EAU NE BOUT PAS":"L\'EAU BOUE FORTEMENT"
+    return(
+        <div className="text-center">
+            <h1 style={{textAlign:"center"}}>CONVERTISSEUR EN CELCIUS</h1>
+            <div className={celcius < 100 ? "alert alert-danger":"alert alert-success"}>{message}</div>
+        </div>
+    )
+}
+
+ReactDOM.render(<Calculator/>,document.querySelector("#app"));
