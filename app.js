@@ -34,6 +34,23 @@ class TemperatureInput extends React.Component{
         )
     }
 }
+
+function Button({type,children}) {
+    const className = "btn btn-"+type;
+    return <button className={className}>{children}</button>
+}
+function PrimaryButton({children}){
+    return <Button type="primary">{children}</Button>
+}
+function DangerButton({children}){
+    return <Button type="danger">{children}</Button>
+}
+function Column2({left,right}){
+    return <div className="row">
+        <div className="col-lg-6">{left}</div>
+        <div className="col-lg-6">{right}</div>
+    </div>
+}
 class Calculator extends React.Component{
     constructor(props){
         super(props);
@@ -42,26 +59,46 @@ class Calculator extends React.Component{
             temperature:20
         }
         this.handleChange = this.handleChange.bind(this);
-        this.handleTemperatureChange = this.handleTemperatureChange.bind(this);
+        this.handleCeilciusChange = this.handleCeilciusChange.bind(this);
+        this.handleFarenHeightChange = this.handleFarenHeightChange.bind(this);
+        this.tryConvert = this.tryConvert.bind(this);
     }
     handleChange(e){
         this.setState({
             temperature:e.target.value
         })
     }
-    handleTemperatureChange(temperature){
+    handleCeilciusChange(temperature){
         this.setState({
+            scale:"c",
             temperature
         })
     }
+    handleFarenHeightChange(temperature){
+        this.setState({
+            scale:"f",
+            temperature
+        })
+    }
+    tryConvert(temperature, conversionFunc){
+        const value = parseFloat(temperature);
+        if(Number.isNaN(value)){
+            return "";
+        }
+        const output = Math.round((conversionFunc(value) * 100)/100).toString();
+        return output;
+    }
+    
     render(){
         const { temperature,scale } = this.state;
-        const celcius = scale==="c" ? temperature:ToCelcius(temperature);
-        const farenheight = scale==="f" ? temperature:ToFarenheight(celcius);
+        const celcius = scale==="c" ? temperature:this.tryConvert(temperature,ToCelcius);
+        const farenheight = scale==="f" ? temperature:this.tryConvert(temperature,ToFarenheight);
         return <div>
-            <TemperatureInput scale="c" temperature={celcius} onTemperatureChange={this.handleTemperatureChange}/>
-            <TemperatureInput scale="f" temperature={farenheight}/>
-            <BoilingVerdict celcius={parseFloat(temperature)}/>
+            
+            
+            <BoilingVerdict celcius={celcius}/>
+            <DangerButton>AJOUTER</DangerButton>
+            <Column2 left={<TemperatureInput scale="c" temperature={celcius} onTemperatureChange={this.handleCeilciusChange}> right={<TemperatureInput scale="f" temperature={farenheight} onTemperatureChange={this.handleFarenHeightChange}/>}/>
         </div>
     }
 }
