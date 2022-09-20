@@ -1,3 +1,3 @@
 # apprendre-react
 
-- React : React : Chapitre 7, TP : Convertisseur Celsius / Fahrenheit : 21min22
+- React : Chapitre 8, La composition: 4min54
