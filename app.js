@@ -95,16 +95,16 @@ class Calculator extends React.Component{
         const farenheight = scale==="f" ? temperature:this.tryConvert(temperature,ToFarenheight);
         return <div>
             
-            
             <BoilingVerdict celcius={celcius}/>
             <DangerButton>AJOUTER</DangerButton>
-            <Column2 left={<TemperatureInput scale="c" temperature={celcius} onTemperatureChange={this.handleCeilciusChange}> right={<TemperatureInput scale="f" temperature={farenheight} onTemperatureChange={this.handleFarenHeightChange}/>}/>
+            <Column2 left={<TemperatureInput scale="c" temperature={celcius} onTemperatureChange={this.handleCeilciusChange}/>} right={<TemperatureInput scale="f" temperature={farenheight} onTemperatureChange={this.handleFarenHeightChange}/>}/>
         </div>
     }
 }
 
 function BoilingVerdict({celcius}){
     let message =  celcius < 100  ? "L'EAU NE BOUT PAS":"L\'EAU BOUE FORTEMENT"
+            
     return(
         <div className="text-center">
             <h1 style={{textAlign:"center"}}>CONVERTISSEUR EN CELCIUS</h1>

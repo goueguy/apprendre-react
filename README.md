@@ -1,3 +1,3 @@
 # apprendre-react
 
-- React : Chapitre 8, La composition: 4min54
+- React : Chapitre 9, TP liste de produits
